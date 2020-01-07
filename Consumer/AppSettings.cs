@@ -2,9 +2,9 @@ namespace Consumer
 {
     public class AppSettings
     {
-        public RabbitSettings Rabbit { get; set; }
+        public InternalRabbitSettings Rabbit { get; set; }
     }
-    public class RabbitSettings
+    public class InternalRabbitSettings
     {
         public string Server { get; set; }
         public string ExchangeName { get; set; }
