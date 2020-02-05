@@ -1,12 +1,9 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMqSettings.Consumer;
-using RabbitMqSettings.Setting;
 using Service;
-using Utils;
+using Configuration;
 
 namespace Consumer
 {
@@ -23,49 +20,11 @@ namespace Consumer
             Console.WriteLine("# Service provider ready");
         }
 
-        private async Task<AppSettings> GetConfigs()
-        {
-            Console.WriteLine("# Loading settings");
-            string json = await FileUtil.ReadFileAsync(Path.Combine(AppContext.BaseDirectory, "appsettings.json"));
-            Console.WriteLine("# Settings loaded");
-
-            return await JsonUtil.FromJson<AppSettings>(json);
-        }
-
         private void ConfigureServices()
         {
             Console.WriteLine("# Configuring services");
 
-            _services.AddSingleton<AppSettings>(provider =>
-            {
-                return GetConfigs().GetAwaiter().GetResult();
-            });
-
-            _services.AddSingleton<IMapper>(provider =>
-            {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<InternalRabbitSettings, RabbitSettings>();
-                });
-                return config.CreateMapper();
-            });
-
-            _services.AddSingleton<RabbitSettings>(provider =>
-            {
-                AppSettings appSettings = provider.GetService<AppSettings>();
-                IMapper mapper = provider.GetService<IMapper>();
-                return mapper.Map<RabbitSettings>(appSettings.Rabbit);
-            });
-
-            _services.AddSingleton<RabbitConsumer>(provider =>
-            {
-                RabbitSettings rabbitSettings = provider.GetService<RabbitSettings>();
-                RabbitConsumer consumer = RabbitConsumerFactory.CreateRabbitConsumer(rabbitSettings);
-
-                return consumer;
-            });
-
-            _services.AddSingleton<FibonacciService>();
+            _services.ConfigureServices();
 
             Console.WriteLine("# Services configured");
         }

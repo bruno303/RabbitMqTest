@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMqSettings.Sender;
 
@@ -22,10 +23,7 @@ namespace Producer
         {
             Console.WriteLine("# Configuring services");
 
-            _services.AddSingleton<RabbitSender>(provider =>
-            {
-                return RabbitSenderFactory.CreateRabbitSender();
-            });
+            _services.ConfigureServices();
 
             Console.WriteLine("# Services configured");
         }

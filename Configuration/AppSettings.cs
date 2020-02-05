@@ -1,4 +1,4 @@
-namespace Consumer
+namespace Configuration
 {
     public class AppSettings
     {

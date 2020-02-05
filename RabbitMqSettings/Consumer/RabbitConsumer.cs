@@ -29,9 +29,10 @@ namespace RabbitMqSettings.Consumer
                 {
                     string msg = Encoding.UTF8.GetString(ea.Body);
                     method(msg);
+                    ch.BasicAck(ea.DeliveryTag, false);
                 };
 
-                ch.BasicConsume(rabbitTemplate.Queue, true, consumer);
+                ch.BasicConsume(rabbitTemplate.Queue, false, consumer);
             });
         }
     }
